@@ -27,4 +27,11 @@
 include 'connect_db.php';
 
 
+// SQL pour récupération de la table des users
+$usersRequest = $pdo->query('SELECT * FROM users');
+
+while ($data = $usersRequest->fetch(PDO::FETCH_ASSOC)) {
+    echo implode(" ", $data);
+    echo "<br>";
+}
 ?>
