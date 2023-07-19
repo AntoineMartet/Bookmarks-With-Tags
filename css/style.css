@@ -110,6 +110,7 @@ a:focus {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  margin-bottom: 70px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
@@ -253,13 +254,12 @@ a:focus {
 .quote_btn-container a span {
   margin-left: 5px;
 }
-/*end header section*/
+/* end header section */
 
 /* slider section : deleted */
 
 /* about section */
 .about_section .row {
-  padding-top: 70px;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -351,7 +351,74 @@ a:focus {
 
 /* Client section : deleted */
 
-/* Contact section : deleted */
+/* Contact section */
+.contact_section {
+  position: relative;
+}
+
+.contact_section .heading_container {
+  margin-bottom: 45px;
+}
+
+.contact_section .form_container input {
+  width: 100%;
+  border: 1px solid #b0b0b0;
+  height: 50px;
+  margin-bottom: 25px;
+  padding-left: 15px;
+  background-color: transparent;
+  outline: none;
+  color: #101010;
+}
+
+.contact_section .form_container input::-webkit-input-placeholder {
+  color: #b0b0b0;
+}
+
+.contact_section .form_container input:-ms-input-placeholder {
+  color: #b0b0b0;
+}
+
+.contact_section .form_container input::-ms-input-placeholder {
+  color: #b0b0b0;
+}
+
+.contact_section .form_container input::placeholder {
+  color: #b0b0b0;
+}
+
+.contact_section .form_container input.message-box {
+  height: 120px;
+}
+
+.contact_section .form_container .btn_box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.contact_section .form_container button {
+  border: none;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 15px 65px;
+  background-color: #ff4646;
+  color: #ffffff;
+  border-radius: 5px;
+  border: 1px solid #ff4646;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  font-weight: bold;
+}
+
+.contact_section .form_container button:hover {
+  background-color: transparent;
+  color: #ff4646;
+}
+
 
 /* info section */
 .info_section {
@@ -501,7 +568,7 @@ a:focus {
   color: #ffffff;
   padding: 20px 0;
   margin: 0;
-  border-top: 1px solid #ffffff;
+  /* border-top: 1px solid #ffffff; */
 }
 
 .footer_section p a {
