@@ -38,18 +38,24 @@
 </div>
 
 <?php
+
+include "includes/connect_db.php";
+
 // define variables and set to empty values
-$usernameErr = $emailErr = $pwdErr = "";
-$username = $email = "";
+$username = $email = $pwd = $pwdRepeat = "";
+$usernameErr = $emailErr = $pwdErr = $pwdRepeatErr = "";
+$usernameOK = $emailOK = $pwdOK = $pwdRepeatOK = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["username"])) {
         $usernameErr = "Username is required";
     } else {
         $username = test_input($_POST["username"]);
-        // check if name only contains letters and whitespace
-        if (!preg_match("/^[a-zA-Z-' ]*$/",$username)) {
-            $usernameErr = "Only letters and white space allowed";
+        // check if name only contains letters and numbers
+        if (!preg_match("/^[a-zA-Z0-9_\-]{2,20}$/", $username)) {
+            $usernameErr = "Needs 2 to 20 characters. Only letters, numbers, - and _ allowed.";
+        } else {
+            $usernameOK = true;
         }
     }
 
@@ -59,9 +65,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = test_input($_POST["email"]);
         // check if e-mail address is well-formed
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Invalid email format";
+            $emailErr = "Invalid email format.";
+        } else {
+            $emailOK = true;
         }
     }
+
+    if (empty($_POST["pwd"])) {
+        $pwdErr = "Password is required.";
+    } else {
+        // check if password meets requirements
+        var_dump($_POST["pwd"]);
+        if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $_POST["pwd"])) {
+            $pwdErr = "Needs at least 8 characters and at least 1 small letter, 1 capital letter and 1 number.";
+        } else {
+            $pwdOK = true;
+        }
+    }
+
+    if (empty($_POST["pwdRepeat"])) {
+        $pwdRepeatErr = "Repeating password is required.";
+    } else {
+        // check if password meets requirements
+        var_dump($_POST["pwdRepeat"]);
+        if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $_POST["pwdRepeat"])) {
+            $pwdRepeatErr = "The two passwords must be the same.";
+        } else {
+            $pwdRepeatOK = true;
+        }
+    }
+
+    if ($usernameOK && $emailOK && $pwdOK && $pwdRepeatOK) {
+        $sqlInsertNewUser = "";
+        $pdo->exec($sqlInsertNewUser);
+    }
+
 
 }
 
@@ -86,17 +124,19 @@ function test_input($data) {
                         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                             <div>
                                 <span class="error"><?php echo $usernameErr;?></span>
-                                <input type="text" name="username" placeholder="Your Username" />
+                                <input type="text" name="username" placeholder="Your Username" value="<?php if($username != ""){ echo $username;}?>"/>
                             </div>
                             <div>
                                 <span class="error"><?php echo $emailErr;?></span>
-                                <input type="email" name="email" placeholder="Your Email" />
+                                <input type="email" name="email" placeholder="Your Email" value="<?php if($email != ""){ echo $email;}?>"/>
                             </div>
                             <div>
-                                <input type="password" placeholder="Your Password" />
+                                <span class="error"><?php echo $pwdErr;?></span>
+                                <input type="password" name="pwd" placeholder="Your Password" />
                             </div>
                             <div>
-                                <input type="password" placeholder="Repeat Password" />
+                                <span class="error"><?php echo $pwdRepeatErr;?></span>
+                                <input type="password" name="pwdRepeat" placeholder="Repeat Password" />
                             </div>
                             <div class="btn_box ">
                                 <button>
