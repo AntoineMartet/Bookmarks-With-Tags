@@ -38,8 +38,8 @@
 </div>
 
 <?php
-
 include "includes/connect_db.php";
+include "includes/functions.php";
 
 // define variables and set to empty values
 $username = $email = $pwd = $pwdRepeat = "";
@@ -97,20 +97,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // P-ê utiliser des else if au-dessus plutôt qu'un ensemble de flags ?
     if ($usernameOK && $emailOK && $pwdOK && $pwdRepeatOK) {
         $sqlInsertNewUser = "insert into users (mail,username,pwd,creationDate) values ('".$email."','".$username."','".$pwd."','".date("Y-m-d H:i:s")."')";
         $pdo->exec($sqlInsertNewUser);
+        header('Location: reads.php');
     }
 
 
 }
 
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
+
 ?>
 
     <section class="contact_section layout_padding-bottom">
