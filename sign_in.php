@@ -75,8 +75,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pwdErr = "Password is required.";
     } else {
         // check if password meets requirements
-        var_dump($_POST["pwd"]);
-        if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $_POST["pwd"])) {
+        $pwd = $_POST["pwd"];
+        var_dump($pwd);
+        if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $pwd)) {
             $pwdErr = "Needs at least 8 characters and at least 1 small letter, 1 capital letter and 1 number.";
         } else {
             $pwdOK = true;
@@ -87,8 +88,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pwdRepeatErr = "Repeating password is required.";
     } else {
         // check if password meets requirements
-        var_dump($_POST["pwdRepeat"]);
-        if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $_POST["pwdRepeat"])) {
+        $pwdRepeat = $_POST["pwdRepeat"];
+        var_dump($pwdRepeat);
+        if ($pwdRepeat != $pwd) {
             $pwdRepeatErr = "The two passwords must be the same.";
         } else {
             $pwdRepeatOK = true;
@@ -96,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($usernameOK && $emailOK && $pwdOK && $pwdRepeatOK) {
-        $sqlInsertNewUser = "";
+        $sqlInsertNewUser = "insert into users (mail,username,pwd,creationDate) values ('".$email."','".$username."','".$pwd."','".date("Y-m-d H:i:s")."')";
         $pdo->exec($sqlInsertNewUser);
     }
 

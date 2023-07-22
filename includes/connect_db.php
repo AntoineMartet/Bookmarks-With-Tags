@@ -6,7 +6,7 @@
  * @version  16.07.2023
  */
 
-$dsn = "mysql:host=bwt-database.c1vsmfbbxgh8.eu-west-3.rds.amazonaws.com;dbname=bwt_db"; // Data Source Name
+$dsn = "mysql:host=bwt-database.c1vsmfbbxgh8.eu-west-3.rds.amazonaws.com;dbname=bwt-db"; // Data Source Name
 $dbPort = "3306";
 $dbUsername = "Admin";
 $dbPwd = "KuLo670zH7s8";
@@ -17,9 +17,8 @@ try{
 }catch(PDOException $e){
     echo "Connection failed: " . $e->getMessage();
 }
-include 'connect_db.php';
 
-
+/* Exemple de requête SQL
 // SQL pour récupération et affichage des entrées de la table des users
 $usersRequest = $pdo->query('SELECT userFirstName, userLastName FROM users');
 
@@ -27,5 +26,6 @@ while ($data = $usersRequest->fetch(PDO::FETCH_ASSOC)) {
     echo implode(" ", $data);
     echo "<br>";
 }
+*/
 
 
