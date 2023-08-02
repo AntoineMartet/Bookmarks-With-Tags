@@ -6,9 +6,9 @@
  * @version  19.07.2023
  */
 
-
-// Start the session
 session_start();
+include "includes/connect_db.php";
+include "includes/functions.php";
 ?>
 
 <!DOCTYPE html>
@@ -37,79 +37,79 @@ session_start();
 
 </head>
 
-<div class="hero_area">
-    <?php include "includes/header.php";?>
-</div>
+<body>
 
-<?php
-include "includes/connect_db.php";
-include "includes/functions.php";
+    <div class="hero_area">
+        <?php include "includes/header.php";?>
+    </div>
 
-// define variables and set to empty values
-$username = $email = $pwd = $pwdRepeat = "";
-$usernameErr = $emailErr = $pwdErr = $pwdRepeatErr = "";
-$usernameOK = $emailOK = $pwdOK = $pwdRepeatOK = false;
+    <?php
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (empty($_POST["username"])) {
-        $usernameErr = "Username is required";
-    } else {
-        $username = test_input($_POST["username"]);
-        // check if name only contains letters and numbers
-        if (!preg_match("/^[a-zA-Z0-9_\-]{2,20}$/", $username)) {
-            $usernameErr = "Needs 2 to 20 characters. Only letters, numbers, - and _ allowed.";
+    // define variables and set to empty values
+    $username = $email = $pwd = $pwdRepeat = "";
+    $usernameErr = $emailErr = $pwdErr = $pwdRepeatErr = "";
+    $usernameOK = $emailOK = $pwdOK = $pwdRepeatOK = false;
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (empty($_POST["username"])) {
+            $usernameErr = "Username is required";
         } else {
-            $usernameOK = true;
+            $username = test_input($_POST["username"]);
+            // check if name only contains letters and numbers
+            if (!preg_match("/^[a-zA-Z0-9_\-]{2,20}$/", $username)) {
+                $usernameErr = "Needs 2 to 20 characters. Only letters, numbers, - and _ allowed.";
+            } else {
+                $usernameOK = true;
+            }
+        }
+
+        if (empty($_POST["email"])) {
+            $emailErr = "Email is required";
+        } else {
+            $email = test_input($_POST["email"]);
+            // check if e-mail address is well-formed
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $emailErr = "Invalid email format.";
+            } else {
+                $emailOK = true;
+            }
+        }
+
+        if (empty($_POST["pwd"])) {
+            $pwdErr = "Password is required.";
+        } else {
+            $pwd = $_POST["pwd"];
+            //var_dump($pwd);
+            // check if password meets requirements
+            if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $pwd)) {
+                $pwdErr = "Needs at least 8 characters and at least 1 small letter, 1 capital letter and 1 number.";
+            } else {
+                $pwdOK = true;
+            }
+        }
+
+        if (empty($_POST["pwdRepeat"])) {
+            $pwdRepeatErr = "Repeating password is required.";
+        } else {
+            $pwdRepeat = $_POST["pwdRepeat"];
+            //var_dump($pwdRepeat);
+            // check if both passwords are the same
+            if ($pwdRepeat != $pwd) {
+                $pwdRepeatErr = "The two passwords must be the same.";
+            } else {
+                $pwdRepeatOK = true;
+            }
+        }
+
+        // P-ê utiliser des else if au-dessus plutôt qu'un ensemble de flags ?
+        if ($usernameOK && $emailOK && $pwdOK && $pwdRepeatOK) {
+            $sqlInsertNewUser = "insert into users (mail,username,pwd,creationDate) values ('".$email."','".$username."','".$pwd."','".date("Y-m-d H:i:s")."')";
+            $pdo->exec($sqlInsertNewUser);
+            $_SESSION["loggedEmail"] = $email;
+            header('Location: reads.php');
         }
     }
-
-    if (empty($_POST["email"])) {
-        $emailErr = "Email is required";
-    } else {
-        $email = test_input($_POST["email"]);
-        // check if e-mail address is well-formed
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Invalid email format.";
-        } else {
-            $emailOK = true;
-        }
-    }
-
-    if (empty($_POST["pwd"])) {
-        $pwdErr = "Password is required.";
-    } else {
-        $pwd = $_POST["pwd"];
-        //var_dump($pwd);
-        // check if password meets requirements
-        if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $pwd)) {
-            $pwdErr = "Needs at least 8 characters and at least 1 small letter, 1 capital letter and 1 number.";
-        } else {
-            $pwdOK = true;
-        }
-    }
-
-    if (empty($_POST["pwdRepeat"])) {
-        $pwdRepeatErr = "Repeating password is required.";
-    } else {
-        $pwdRepeat = $_POST["pwdRepeat"];
-        //var_dump($pwdRepeat);
-        // check if both passwords are the same
-        if ($pwdRepeat != $pwd) {
-            $pwdRepeatErr = "The two passwords must be the same.";
-        } else {
-            $pwdRepeatOK = true;
-        }
-    }
-
-    // P-ê utiliser des else if au-dessus plutôt qu'un ensemble de flags ?
-    if ($usernameOK && $emailOK && $pwdOK && $pwdRepeatOK) {
-        $sqlInsertNewUser = "insert into users (mail,username,pwd,creationDate) values ('".$email."','".$username."','".$pwd."','".date("Y-m-d H:i:s")."')";
-        $pdo->exec($sqlInsertNewUser);
-        $_SESSION["loggedEmail"] = $email;
-        header('Location: reads.php');
-    }
-}
-?>
+    ?>
 
     <section class="contact_section layout_padding-bottom">
         <div class="container">
@@ -149,5 +149,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </section>
+</body>
 
 <?php include "includes/footer.php";?>

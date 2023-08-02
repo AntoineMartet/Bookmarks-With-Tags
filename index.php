@@ -5,6 +5,10 @@
  * @author   Created by AntoineM
  * @version  14.07.2023
  */
+
+session_start();
+include "includes/connect_db.php";
+include "includes/functions.php";
 ?>
 
 <!DOCTYPE html>

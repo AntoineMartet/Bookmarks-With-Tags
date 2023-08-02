@@ -24,10 +24,17 @@
                         <a class="nav-link" href="../index.php">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../sign_in.php">Sign in</a>
+                        <!-- Displays either "Log out" with a link to the logout page (which redirects to the index page)
+                        or "Sign in" with a link to the sign in page -->
+                        <a class="nav-link" <?php echo (isset($_SESSION["loggedEmail"])) ? 'href="../logout.php"' : 'href="../sign_in.php"';?>>
+                            <?php echo (isset($_SESSION["loggedEmail"])) ? "Log out" : "Sign in";?>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../login.php">Log in</a>
+                        <!-- Displays either the mail with a link to the account page or "Log in" with a link to the login page -->
+                        <a class="nav-link" <?php echo (isset($_SESSION["loggedEmail"])) ? 'href="../account.php"' : 'href="../login.php"';?>>
+                            <?php echo (isset($_SESSION["loggedEmail"])) ? $_SESSION["loggedEmail"] : "Log in";?>
+                        </a>
                     </li>
                 </ul>
             </div>

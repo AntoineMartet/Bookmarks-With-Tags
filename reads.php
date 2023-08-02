@@ -6,6 +6,9 @@
  * @version  17.07.2023
  */
 
+session_start();
+include "includes/connect_db.php";
+include "includes/functions.php";
 ?>
 
 
@@ -37,27 +40,29 @@
 
 <body>
 
-<div class="hero_area">
-    <?php include "includes/header.php" ?>
-</div>
+    <div class="hero_area">
+        <?php include "includes/header.php" ?>
+    </div>
+
+    <?php
+
+    $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $_SESSION['loggedEmail'] . "'");
+    $user = $userRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
+    ?>
 
 
-<h1>Welcome to your reading space</h1>
+    <h1>Welcome to your reading space, <?= $user['username'] ?>!</h1>
 
 
 
+    <?php include "includes/footer.php"?>
 
-
-<?php include "includes/footer.php"?>
-
-<!-- jQery -->
-<script src="js/jquery-3.4.1.min.js"></script>
-<!-- bootstrap js -->
-<script src="js/bootstrap.js"></script>
-<!-- custom js -->
-<script src="js/custom.js"></script>
-
-
+    <!-- jQery -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.js"></script>
+    <!-- custom js -->
+    <script src="js/custom.js"></script>
 </body>
 
 </html>
