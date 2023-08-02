@@ -5,6 +5,10 @@
  * @author   Created by AntoineM
  * @version  19.07.2023
  */
+
+
+// Start the session
+session_start();
 ?>
 
 <!DOCTYPE html>
@@ -74,9 +78,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["pwd"])) {
         $pwdErr = "Password is required.";
     } else {
-        // check if password meets requirements
         $pwd = $_POST["pwd"];
-        var_dump($pwd);
+        //var_dump($pwd);
+        // check if password meets requirements
         if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $pwd)) {
             $pwdErr = "Needs at least 8 characters and at least 1 small letter, 1 capital letter and 1 number.";
         } else {
@@ -87,9 +91,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["pwdRepeat"])) {
         $pwdRepeatErr = "Repeating password is required.";
     } else {
-        // check if password meets requirements
         $pwdRepeat = $_POST["pwdRepeat"];
-        var_dump($pwdRepeat);
+        //var_dump($pwdRepeat);
+        // check if both passwords are the same
         if ($pwdRepeat != $pwd) {
             $pwdRepeatErr = "The two passwords must be the same.";
         } else {
@@ -101,13 +105,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($usernameOK && $emailOK && $pwdOK && $pwdRepeatOK) {
         $sqlInsertNewUser = "insert into users (mail,username,pwd,creationDate) values ('".$email."','".$username."','".$pwd."','".date("Y-m-d H:i:s")."')";
         $pdo->exec($sqlInsertNewUser);
+        $_SESSION["loggedEmail"] = $email;
         header('Location: reads.php');
     }
-
-
 }
-
-
 ?>
 
     <section class="contact_section layout_padding-bottom">

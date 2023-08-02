@@ -69,12 +69,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 function checkAccountInDb($mailAddress, $password) {
     global $pdo; // Obligatoire car on est dans une fonction
     global $emailErr;
+    global $pwd;
+    global $pwdErr;
     $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $mailAddress . "'");
     $user = $userRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
+    // Si mail found in BDD, check if password entered is the same as in the DB
     if($user){
-        echo '<pre>';
+        /* echo '<pre>';
         var_dump($user);
-        echo '</pre>';
+        echo '</pre>'; */
+
+        if($pwd == $user['pwd']){
+            header('Location: reads.php');
+        } else {
+            $pwdErr = "Incorrect password.";
+        }
     } else {
         $emailErr = "No account is linked to this address.";
     }
