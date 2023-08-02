@@ -69,8 +69,8 @@ include "includes/functions.php";
 
     function checkAccountInDb($mailAddress, $password) {
         global $pdo; // Obligatoire car on est dans une fonction
-        global $emailErr;
-        global $pwdErr;
+        global $titleErr;
+        global $descriptionErr;
         $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $mailAddress . "'");
         $user = $userRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
         // Si mail found in BDD, check if password entered is the same as in the DB
@@ -83,10 +83,10 @@ include "includes/functions.php";
                 $_SESSION["loggedEmail"] = $mailAddress;
                 header('Location: reads.php');
             } else {
-                $pwdErr = "Incorrect password.";
+                $descriptionErr = "Incorrect password.";
             }
         } else {
-            $emailErr = "No account is linked to this address.";
+            $titleErr = "No account is linked to this address.";
         }
     }
 

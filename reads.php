@@ -53,7 +53,27 @@ include "includes/functions.php";
 
     <h1>Welcome to your reading space, <?= $user['username'] ?>!</h1>
 
+    <section class="about_section layout_padding-bottom">
+        <div class="container  ">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="detail-box">
+                        <a href="add_read.php">
+                            Add a Read
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="detail-box">
+                        <a href="">
+                            Manage your tags
+                        </a>
+                    </div>
+                </div>
 
+            </div>
+        </div>
+    </section>
 
     <?php include "includes/footer.php"?>
 

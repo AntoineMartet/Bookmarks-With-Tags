@@ -21,19 +21,21 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav  ml-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="../index.php">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <!-- Displays either "Log out" with a link to the logout page (which redirects to the index page)
-                        or "Sign in" with a link to the sign in page -->
-                        <a class="nav-link" <?php echo (isset($_SESSION["loggedEmail"])) ? 'href="../logout.php"' : 'href="../sign_in.php"';?>>
-                            <?php echo (isset($_SESSION["loggedEmail"])) ? "Log out" : "Sign in";?>
+                        <a class="nav-link" <?php echo (isset($_SESSION["loggedEmail"])) ? 'href="../reads.php"' : 'href="../index.php"';?>>
+                            <?php echo (isset($_SESSION["loggedEmail"])) ? "Reads" : "Home";?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <!-- Displays either the mail with a link to the account page or "Log in" with a link to the login page -->
                         <a class="nav-link" <?php echo (isset($_SESSION["loggedEmail"])) ? 'href="../account.php"' : 'href="../login.php"';?>>
                             <?php echo (isset($_SESSION["loggedEmail"])) ? $_SESSION["loggedEmail"] : "Log in";?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <!-- Displays either "Log out" with a link to the logout page (which redirects to the index page)
+                        or "Sign in" with a link to the sign in page -->
+                        <a class="nav-link" <?php echo (isset($_SESSION["loggedEmail"])) ? 'href="../logout.php"' : 'href="../sign_in.php"';?>>
+                            <?php echo (isset($_SESSION["loggedEmail"])) ? "Log out" : "Sign in";?>
                         </a>
                     </li>
                 </ul>
