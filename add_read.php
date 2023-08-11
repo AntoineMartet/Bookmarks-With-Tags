@@ -49,12 +49,57 @@ include "includes/functions.php";
 
     // define variables and set to empty values
     $url = $title = $description = $length = "";
-    $urlErr = $titleErr = $descriptionErr = $lengthErr = "";
-    $urlOK = $titleOK = $descriptionOK = $lengthOK = false;
+    $urlErr = $titleErr = $lengthErr = "";
+    $urlOK = $titleOK = $lengthOK = false;
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // ... Checker tous les inputs avant d'envoyer à la BDD
         // ...
+
+        // Check presence and validity or URL
+        if(empty($_POST['url'])){
+            $urlErr = "URL is required";
+        } else {
+            $url = test_input($_POST['url']);
+            if(!filter_var($url, FILTER_VALIDATE_URL)){
+                $urlErr = "This is not a valid URL";
+            } else {
+                $urlOK = true;
+            }
+        }
+
+        // Check existence of Title
+        if(empty($_POST['title'])){
+            $titleErr = "Title is required";
+        } else {
+            $title = test_input($_POST['title']);
+            $titleOK = true;
+        }
+
+        $description = test_input($_POST['description']);
+
+        // Check a length choice has been made
+        if(empty($_POST['length'])){
+            $lengthErr = "Length is required";
+        } else {
+            $length = test_input($_POST['length']);
+            $lengthOK = true;
+        }
+
+        if($urlOK && $titleOK && $lengthOK){
+            // Getting User ID from his mail
+            $userIdRequest = $pdo->query("SELECT id FROM users WHERE mail ='" . $_SESSION["loggedEmail"] . "'");
+            $userId = $userIdRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
+            // "reads" is a reserved keyword in MySQL. By adding the backticks around the table name "reads", you inform MySQL that it's a table name and not a keyword.
+            $sqlInsertNewRead = "insert into `reads` (url,title,creationDate,description,length,readingStatus,userFK) values ('$url','$title','".date("Y-m-d H:i:s")."','$description','$length','read','".$userId["id"]."')";
+            $pdo->exec($sqlInsertNewRead);
+            // header('Location: reads.php');
+            // exit();
+        }
+
+        echo '<pre>';
+        var_dump($_SESSION);
+        echo '</pre>';
     }
     ?>
 
@@ -68,6 +113,7 @@ include "includes/functions.php";
             <div class="row">
                 <div class="col-md-8 col-lg-6 mx-auto">
                     <div class="form_container">
+
                         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                             <div>
                                 <span class="error"><?php echo $urlErr;?></span>
@@ -78,16 +124,28 @@ include "includes/functions.php";
                                 <input type="text" name="title" placeholder="Title" value="<?php if($title != ""){ echo $title;}?>"/>
                             </div>
                             <div>
-                                <span class="error"><?php echo $descriptionErr;?></span>
                                 <input type="text" name="description" placeholder="Description or notes about the Read..." />
                             </div>
                             <div>
                                 <span class="error"><?php echo $lengthErr;?></span>
+                                <select name="length">
+                                    <option value="">--Length of the read--</option>
+                                    <option value="short">< 10 minutes (short)</option>
+                                    <option value="medium">10 - 30 minutes (medium)</option>
+                                    <option value="long">30 - 60 minutes (long)</option>
+                                    <option value="x-long">> 60 minutes (extra-long)</option>
+                                </select>
+                            </div>
+
+                            <!--
+                            <div>
+                                <span class="error"><?php echo $lengthErr;?></span>
                                 <input type="text" name="length" placeholder="Length of the Read (in minutes)" />
                             </div>
+                            -->
                             <div class="btn_box ">
                                 <button>
-                                    SIGN IN
+                                    ADD THIS READ
                                 </button>
                             </div>
                         </form>

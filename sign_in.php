@@ -107,6 +107,7 @@ include "includes/functions.php";
             $pdo->exec($sqlInsertNewUser);
             $_SESSION["loggedEmail"] = $email;
             header('Location: reads.php');
+            exit();
         }
     }
     ?>
