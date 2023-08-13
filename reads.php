@@ -47,13 +47,26 @@ include "includes/functions.php";
     <?php
     $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $_SESSION['loggedEmail'] . "'");
     $user = $userRequest->fetch(PDO::FETCH_ASSOC); // return false if nothing is found
+
+    /* The fetch() method retrieves only one row from the result set at a time.
+    By using the fetchAll() method, you'll get an array containing all the rows from the result set.
+    Then, you can iterate through this array using a loop (in this case, a foreach loop) to display each row's data. */
+    $readsRequest = $pdo->query("SELECT * FROM `reads` WHERE userFK ='" . $user['id'] . "'");
+    $reads = $readsRequest->fetchAll(PDO::FETCH_ASSOC); // return false if nothing is found
+
+    /*foreach ($reads as $read) {
+        echo "<pre>";
+        var_dump($reads);
+        echo "</pre>";
+    }*/
     ?>
 
 
-    <h1>Welcome to your reading space, <?= $user['username'] ?>!</h1>
+
 
     <section class="about_section layout_padding-bottom">
         <div class="container">
+            <h1>Welcome to your reading space, <?= $user['username'] ?>!</h1>
             <div class="row">
                 <div class="col-md-6">
                     <div class="detail-box">
@@ -73,6 +86,33 @@ include "includes/functions.php";
         </div>
     </section>
 
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Length</th>
+                    <th scope="col">Link</th>
+                    <th scope="col">Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($reads as $read) {
+                    echo '<tr>';
+                    echo '  <td>' . $read["creationDate"] . '</td>
+                            <th scope="row">' . $read["title"] . '</th>
+                            <td>' . $read["description"] . '</td>
+                            <td>' . $read["length"] . '</td>
+                            <td><a href="' . $read["url"] . '" target="_blank">' . $read["url"] . '</a></td>
+                            <td>tags...</td>';
+                    echo '</tr>';
+                }
+                ?>
+            </tbody>
+        </table>
 
 
     <?php include "includes/footer.php";?>
