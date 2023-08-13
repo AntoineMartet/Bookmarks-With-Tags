@@ -11,29 +11,29 @@ include "includes/connect_db.php";
 include "includes/functions.php";
 ?>
 
-<!DOCTYPE html>
-<html>
+    <!DOCTYPE html>
+    <html>
 
 <head>
     <!-- Basic -->
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <!-- Mobile Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
     <title>Login - Bookmarks With Tags</title>
-    <link rel="icon" href="images/fevicon.png" type="image/gif" />
+    <link rel="icon" href="images/fevicon.png" type="image/gif"/>
 
     <!-- bootstrap core css -->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
     <!-- fonts style -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- font awesome style -->
-    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet"/>
     <!-- Custom styles for this template -->
-    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet"/>
     <!-- responsive style -->
-    <link href="css/responsive.css" rel="stylesheet" />
+    <link href="css/responsive.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -43,12 +43,14 @@ include "includes/functions.php";
 
     <?php
 
-    // define variables and set to empty values
+    // values for the form fields
     $email = $pwd = "";
+    // error messages for the form fields
     $emailErr = $pwdErr = "";
+    // flags to check form fields validity
     $emailOK = $pwdOK = false;
 
-
+    // checking validity of all the form fields
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($_POST["email"])) {
             $emailErr = "Email is required";
@@ -67,19 +69,22 @@ include "includes/functions.php";
         }
     }
 
-    function checkAccountInDb($mailAddress, $password) {
-        global $pdo; // Obligatoire car on est dans une fonction
+    function checkAccountInDb($mailAddress, $password)
+    {
+        // "global" mandatory because we're in a function
+        global $pdo;
         global $emailErr;
         global $pwdErr;
-        $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $mailAddress . "'");
-        $user = $userRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
-        // Si mail found in BDD, check if password entered is the same as in the DB
-        if($user){
+        $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='$mailAddress'");
+        $user = $userRequest->fetch(PDO::FETCH_ASSOC); // return false if nothing is found
+
+        // if mail found in BDD, check if password entered is the same as in the DB
+        if ($user) {
             /* echo '<pre>';
             var_dump($user);
             echo '</pre>'; */
 
-            if($password == $user['pwd']){
+            if ($password == $user['pwd']) {
                 $_SESSION["loggedEmail"] = $mailAddress;
                 header('Location: reads.php');
                 exit();
@@ -110,11 +115,11 @@ include "includes/functions.php";
                             </div>
                             <div>
                                 <span class="error"><?php echo $pwdErr;?></span>
-                                <input type="password" name="pwd" placeholder="Your Password" />
+                                <input type="password" name="pwd" placeholder="Your Password"/>
                             </div>
-                            <div class="btn_box ">
+                            <div class="btn_box">
                                 <button>
-                                    Log in
+                                    LOG IN
                                 </button>
                             </div>
                         </form>
@@ -123,6 +128,16 @@ include "includes/functions.php";
             </div>
         </div>
     </section>
+
+    <?php include "includes/footer.php";?>
+
+    <!-- jQery -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.js"></script>
+    <!-- custom js -->
+    <script src="js/custom.js"></script>
+
 </body>
 
-<?php include "includes/footer.php"; ?>
+</html>

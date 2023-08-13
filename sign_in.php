@@ -38,24 +38,25 @@ include "includes/functions.php";
 </head>
 
 <body>
-
     <div class="hero_area">
         <?php include "includes/header.php";?>
     </div>
 
     <?php
-
-    // define variables and set to empty values
+    // values for the form fields
     $username = $email = $pwd = $pwdRepeat = "";
+    // error messages for the form fields
     $usernameErr = $emailErr = $pwdErr = $pwdRepeatErr = "";
+    // flags to check form fields validity
     $usernameOK = $emailOK = $pwdOK = $pwdRepeatOK = false;
 
+    // checking validity of all the form fields
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($_POST["username"])) {
             $usernameErr = "Username is required";
         } else {
             $username = test_input($_POST["username"]);
-            // check if name only contains letters and numbers
+            // check if username only contains letters and numbers
             if (!preg_match("/^[a-zA-Z0-9_\-]{2,20}$/", $username)) {
                 $usernameErr = "Needs 2 to 20 characters. Only letters, numbers, - and _ allowed.";
             } else {
@@ -79,9 +80,8 @@ include "includes/functions.php";
             $pwdErr = "Password is required.";
         } else {
             $pwd = $_POST["pwd"];
-            //var_dump($pwd);
             // check if password meets requirements
-            if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,18}$/", $pwd)) {
+            if (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$^&*()_-]).{8,255}$/", $pwd)) {
                 $pwdErr = "Needs at least 8 characters and at least 1 small letter, 1 capital letter and 1 number.";
             } else {
                 $pwdOK = true;
@@ -92,7 +92,6 @@ include "includes/functions.php";
             $pwdRepeatErr = "Repeating password is required.";
         } else {
             $pwdRepeat = $_POST["pwdRepeat"];
-            //var_dump($pwdRepeat);
             // check if both passwords are the same
             if ($pwdRepeat != $pwd) {
                 $pwdRepeatErr = "The two passwords must be the same.";
@@ -101,9 +100,9 @@ include "includes/functions.php";
             }
         }
 
-        // P-ê utiliser des else if au-dessus plutôt qu'un ensemble de flags ?
+        // inserts the sign in data in the DB
         if ($usernameOK && $emailOK && $pwdOK && $pwdRepeatOK) {
-            $sqlInsertNewUser = "insert into users (mail,username,pwd,creationDate) values ('".$email."','".$username."','".$pwd."','".date("Y-m-d H:i:s")."')";
+            $sqlInsertNewUser = "insert into users (mail,username,pwd,creationDate) values ('$email','$username','$pwd','" . date("Y-m-d H:i:s") . "')";
             $pdo->exec($sqlInsertNewUser);
             $_SESSION["loggedEmail"] = $email;
             header('Location: reads.php');
@@ -125,21 +124,21 @@ include "includes/functions.php";
                         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                             <div>
                                 <span class="error"><?php echo $usernameErr;?></span>
-                                <input type="text" name="username" placeholder="Your Username" value="<?php if($username != ""){ echo $username;}?>"/>
+                                <input type="text" name="username" placeholder="Your Username" value="<?php if($username != ""){ echo $username; }?>"/>
                             </div>
                             <div>
                                 <span class="error"><?php echo $emailErr;?></span>
-                                <input type="email" name="email" placeholder="Your Email" value="<?php if($email != ""){ echo $email;}?>"/>
+                                <input type="email" name="email" placeholder="Your Email" value="<?php if($email != ""){ echo $email; }?>"/>
                             </div>
                             <div>
                                 <span class="error"><?php echo $pwdErr;?></span>
-                                <input type="password" name="pwd" placeholder="Your Password" />
+                                <input type="password" name="pwd" placeholder="Your Password"/>
                             </div>
                             <div>
                                 <span class="error"><?php echo $pwdRepeatErr;?></span>
-                                <input type="password" name="pwdRepeat" placeholder="Repeat Password" />
+                                <input type="password" name="pwdRepeat" placeholder="Repeat Password"/>
                             </div>
-                            <div class="btn_box ">
+                            <div class="btn_box">
                                 <button>
                                     SIGN IN
                                 </button>
@@ -150,6 +149,16 @@ include "includes/functions.php";
             </div>
         </div>
     </section>
+
+    <?php include "includes/footer.php";?>
+
+    <!-- jQery -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.js"></script>
+    <!-- custom js -->
+    <script src="js/custom.js"></script>
+
 </body>
 
-<?php include "includes/footer.php";?>
+</html>

@@ -16,25 +16,24 @@ include "includes/functions.php";
 
 <head>
     <!-- Basic -->
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <!-- Mobile Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
     <title>Add a Read - Bookmarks With Tags</title>
-    <link rel="icon" href="images/fevicon.png" type="image/gif" />
+    <link rel="icon" href="images/fevicon.png" type="image/gif"/>
 
     <!-- bootstrap core css -->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
     <!-- fonts style -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- font awesome style -->
-    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet"/>
     <!-- Custom styles for this template -->
-    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet"/>
     <!-- responsive style -->
-    <link href="css/responsive.css" rel="stylesheet" />
-
+    <link href="css/responsive.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -45,13 +44,16 @@ include "includes/functions.php";
 
     <?php
     $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $_SESSION['loggedEmail'] . "'");
-    $user = $userRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
+    $user = $userRequest->fetch(PDO::FETCH_ASSOC); // return false if nothing is found
 
-    // define variables and set to empty values
+    // values for the form fields
     $url = $title = $description = $length = "";
+    // error messages for the form fields
     $urlErr = $titleErr = $lengthErr = "";
+    // flags to check form fields validity
     $urlOK = $titleOK = $lengthOK = false;
 
+    // checking validity of all the form fields
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // ... Checker tous les inputs avant d'envoyer à la BDD
         // ...
@@ -86,20 +88,17 @@ include "includes/functions.php";
             $lengthOK = true;
         }
 
+        // inserts the read data in the DB
         if($urlOK && $titleOK && $lengthOK){
             // Getting User ID from his mail
             $userIdRequest = $pdo->query("SELECT id FROM users WHERE mail ='" . $_SESSION["loggedEmail"] . "'");
             $userId = $userIdRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
-            // "reads" is a reserved keyword in MySQL. By adding the backticks around the table name "reads", you inform MySQL that it's a table name and not a keyword.
-            $sqlInsertNewRead = "insert into `reads` (url,title,creationDate,description,length,readingStatus,userFK) values ('$url','$title','".date("Y-m-d H:i:s")."','$description','$length','read','".$userId["id"]."')";
+            // "reads" is a reserved keyword in MySQL. By adding the backticks around the table name "reads", we inform MySQL that it's a table name and not a keyword.
+            $sqlInsertNewRead = "insert into `reads` (url,title,creationDate,description,length,readingStatus,userFK) values ('$url','$title','" . date("Y-m-d H:i:s") . "','$description','$length','read','" . $userId["id"] . "')";
             $pdo->exec($sqlInsertNewRead);
-            // header('Location: reads.php');
-            // exit();
+            header('Location: reads.php');
+            exit();
         }
-
-        echo '<pre>';
-        var_dump($_SESSION);
-        echo '</pre>';
     }
     ?>
 
@@ -124,7 +123,7 @@ include "includes/functions.php";
                                 <input type="text" name="title" placeholder="Title" value="<?php if($title != ""){ echo $title;}?>"/>
                             </div>
                             <div>
-                                <input type="text" name="description" placeholder="Description or notes about the Read..." />
+                                <input type="text" name="description" placeholder="Description or notes about the Read..."/>
                             </div>
                             <div>
                                 <span class="error"><?php echo $lengthErr;?></span>
@@ -143,7 +142,7 @@ include "includes/functions.php";
                                 <input type="text" name="length" placeholder="Length of the Read (in minutes)" />
                             </div>
                             -->
-                            <div class="btn_box ">
+                            <div class="btn_box">
                                 <button>
                                     ADD THIS READ
                                 </button>
@@ -155,10 +154,7 @@ include "includes/functions.php";
         </div>
     </section>
 
-
-
-
-    <?php include "includes/footer.php"?>
+    <?php include "includes/footer.php";?>
 
     <!-- jQery -->
     <script src="js/jquery-3.4.1.min.js"></script>
@@ -166,6 +162,7 @@ include "includes/functions.php";
     <script src="js/bootstrap.js"></script>
     <!-- custom js -->
     <script src="js/custom.js"></script>
+
 </body>
 
 </html>

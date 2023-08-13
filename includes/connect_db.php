@@ -11,10 +11,10 @@ $dbPort = "3306";
 $dbUsername = "Admin";
 $dbPwd = "KuLo670zH7s8";
 
-try{
+try {
     $pdo = new PDO($dsn, $dbUsername, $dbPwd);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}catch(PDOException $e){
+} catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }
 
