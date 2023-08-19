@@ -86,8 +86,6 @@ include "includes/functions.php";
             </div>
         </div>
     </section>
-
-
         <table class="table table-striped table-hover">
             <thead>
                 <tr>

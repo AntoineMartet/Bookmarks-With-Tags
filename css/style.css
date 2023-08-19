@@ -589,6 +589,7 @@ button.close {
   margin-top: -0.1rem;
   margin-left: 0.6rem;
   padding-right: 0;
+  padding-left: 0;
   color: #aaa;
   text-shadow: unset;
   opacity: 1;
