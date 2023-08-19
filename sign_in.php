@@ -103,10 +103,24 @@ include "includes/functions.php";
         // inserts the sign in data in the DB
         if ($usernameOK && $emailOK && $pwdOK && $pwdRepeatOK) {
             $sqlInsertNewUser = "insert into users (mail,username,pwd,creationDate) values ('$email','$username','$pwd','" . date("Y-m-d H:i:s") . "')";
-            $pdo->exec($sqlInsertNewUser);
-            $_SESSION["loggedEmail"] = $email;
-            header('Location: reads.php');
-            exit();
+            // $pdo->exec($sqlInsertNewUser);
+
+            //trigger exception in a "try" block
+            try {
+                $pdo->exec($sqlInsertNewUser);
+                //If the exception is thrown, this text will not be shown
+                echo 'If you see this, the account was created successfully';
+
+                $_SESSION["loggedEmail"] = $email;
+                header('Location: reads.php');
+                exit();
+            }
+
+            //catch exception
+            catch(Exception $e) {
+                echo 'Message perso d\'erreur: ' . $e->getMessage() . ' on line ' . $e->getLine();
+                $emailErr = "Cette adresse mail est déjà liée à un compte.";
+            }
         }
     }
     ?>
