@@ -47,6 +47,7 @@ include "includes/functions.php";
     <?php
     $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $_SESSION['loggedEmail'] . "'");
     $user = $userRequest->fetch(PDO::FETCH_ASSOC); // return false if nothing is found
+    $_SESSION['loggedUser'] = $user;
 
     /* The fetch() method retrieves only one row from the result set at a time.
     By using the fetchAll() method, you'll get an array containing all the rows from the result set.
@@ -54,11 +55,11 @@ include "includes/functions.php";
     $readsRequest = $pdo->query("SELECT * FROM `reads` WHERE userFK ='" . $user['id'] . "'");
     $reads = $readsRequest->fetchAll(PDO::FETCH_ASSOC); // return false if nothing is found
 
-    /*foreach ($reads as $read) {
+    foreach ($reads as $read) {
         echo "<pre>";
-        var_dump($reads);
+        var_dump($read);
         echo "</pre>";
-    }*/
+    }
     ?>
 
 
@@ -77,7 +78,7 @@ include "includes/functions.php";
                 </div>
                 <div class="col-md-6">
                     <div class="detail-box">
-                        <a href="">
+                        <a href="manage_tags.php">
                             Manage your tags
                         </a>
                     </div>

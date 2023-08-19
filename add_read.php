@@ -135,13 +135,6 @@ include "includes/functions.php";
                                     <option value="x-long">> 60 minutes (extra-long)</option>
                                 </select>
                             </div>
-
-                            <!--
-                            <div>
-                                <span class="error"><?php echo $lengthErr;?></span>
-                                <input type="text" name="length" placeholder="Length of the Read (in minutes)" />
-                            </div>
-                            -->
                             <div class="btn_box">
                                 <button>
                                     ADD THIS READ
