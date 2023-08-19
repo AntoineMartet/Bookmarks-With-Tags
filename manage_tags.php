@@ -47,44 +47,64 @@ include "includes/functions.php";
     $tag = "";
     $tagErr = "";
     $noTagsMessage = "";
-    $tagOK = false;
+    $tagExists = false;
 
     $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $_SESSION['loggedEmail'] . "'");
     $user = $userRequest->fetch(PDO::FETCH_ASSOC); // return false if nothing is found
 
-    $tagsRequest = $pdo->query("SELECT * FROM tags WHERE userFK ='" . $user['id'] . "'");
-    $tags = $tagsRequest->fetch(PDO::FETCH_ASSOC); // return false if nothing is found
+    $existingTagsRequest = $pdo->query("SELECT * FROM tags WHERE userFK ='" . $user['id'] . "'");
+    $existingTags = $existingTagsRequest->fetchAll(PDO::FETCH_ASSOC); // return false if nothing is found
 
-    if(!$tags){
+    if(!$existingTags){
         $noTagsMessage = "For the moment, you don't have any tags.";
     }
 
     // checking that the tag is indeed new
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $newTag = $_POST['tag'];
+        // Check existence of tag name
+        if(empty($_POST['tag'])){
+            $tagErr = "A tag name is required";
+        } else {
+            $tag = test_input($_POST['tag']);
+        }
+
+        // Check if tag already exists
+        foreach ($existingTags as $existingTag){
+            if($existingTag['name'] == $tag){
+                $tagExists = true;
+            }
+        }
+
+        // If tag already exists, message. Else, add tag to DB.
+        if($tagExists){
+            $tagErr = "The tag " . $tag . " already exists";
+        } else {
+            $sqlInsertNewTag = "insert into tags (name,creationDate,userFK) values ('$tag','" . date("Y-m-d H:i:s") . "','" . $user["id"] . "')";
+            $pdo->exec($sqlInsertNewTag);
+            header('Location: manage_tags.php');
+            exit();
+        }
     }
 
-    foreach ($tags as $tag) {
+    /*
+    foreach ($existingTags as $existingTag) {
         echo "<pre>";
-        var_dump($tag);
+        var_dump($existingTag);
         echo "</pre>";
-    }
+    }*/
     ?>
 
     <section class="contact_section layout_padding-bottom">
         <div class="container">
             <div class="heading_container heading_center">
                 <h2>
-                    You can add or delete tags here, <?= $user['username'] ?>!<br>
-                </h2>
-                <p>
-                    <?= $noTagsMessage ?>
-                </p>
+                    You can add or delete tags here, <?= $user['username'] ?>!
+                </h2><br>
+                <?php if($noTagsMessage){ echo "<p>" . $noTagsMessage . "</p>"; } ?>
             </div>
             <div class="row">
                 <div class="col-md-8 col-lg-6 mx-auto">
                     <div class="form_container">
-
                         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                             <div>
                                 <span class="error"><?php echo $tagErr;?></span>
@@ -96,6 +116,17 @@ include "includes/functions.php";
                                 </button>
                             </div>
                         </form>
+                    </div>
+                    <div class="m-2">
+                        <?php
+                        foreach ($existingTags as $existingTag) {
+                            echo '<span class="m-2 badge badge-pill badge-secondary tags">' . $existingTag['name'] . '
+                                    <button type="button" class="close" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                  </span>';
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

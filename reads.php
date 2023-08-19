@@ -55,11 +55,11 @@ include "includes/functions.php";
     $readsRequest = $pdo->query("SELECT * FROM `reads` WHERE userFK ='" . $user['id'] . "'");
     $reads = $readsRequest->fetchAll(PDO::FETCH_ASSOC); // return false if nothing is found
 
-    foreach ($reads as $read) {
+    /*foreach ($reads as $read) {
         echo "<pre>";
         var_dump($read);
         echo "</pre>";
-    }
+    }*/
     ?>
 
 

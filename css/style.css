@@ -579,3 +579,17 @@ a:focus {
 .error {
   color: #ff4646;
 }
+
+.tags {
+  padding: 0.65rem 0.9rem 0.5rem 0.9rem;
+  font-size: 120%;
+}
+
+button.close {
+  margin-top: -0.1rem;
+  margin-left: 0.6rem;
+  padding-right: 0;
+  color: #aaa;
+  text-shadow: unset;
+  opacity: 1;
+}
