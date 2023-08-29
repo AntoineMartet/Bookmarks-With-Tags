@@ -108,17 +108,25 @@ include "includes/functions.php";
             //trigger exception in a "try" block
             try {
                 $pdo->exec($sqlInsertNewUser);
-                //If the exception is thrown, this text will not be shown
-                echo 'If you see this, the account was created successfully';
-
+                //If the exception is thrown, the rest of the "try" won't be executed, the code will jump to the catch.
+                //If no exception is thrown (that means, if $pdo->exec() works), the following code will be executed.
                 $_SESSION["loggedEmail"] = $email;
                 header('Location: reads.php');
                 exit();
             }
 
-            //catch exception
-            catch(Exception $e) {
-                echo 'Message perso d\'erreur: ' . $e->getMessage() . ' on line ' . $e->getLine();
+            //catch exception. Beware of the type of the exception. The subtype of the exception we have here is PDOException.
+            // Most of properties and methods from PDOException are inherited from Exception but some are specific.
+            catch(PDOException $e) {
+                // Si on écrit juste echo "Message perso..." le contenu sera affiché sur la page web.
+                // Pour écrire dans la console, on peut echo un bout de script JS qui commence par console.log() :
+                // echo "<script>console.log('Message perso d\'erreur: " . $e->getMessage() . " on line " . $e->getLine() . "')</script>";
+                // Mais le code ci-dessus ne fonctionne par car il n'est pas sanitized. Il faut escape les caractères qui
+                // pourrait casser le code JS, par exemple les single quote :
+                $errorMessage = "Message perso d'erreur: " . $e->getMessage() . " on line " . $e->getLine();
+                $errorMessage = str_replace("'", "\\'", $errorMessage); // Escape single quotes
+                echo "<script>console.log('" . $errorMessage . "');</script>";
+
                 $emailErr = "Cette adresse mail est déjà liée à un compte.";
             }
         }

@@ -94,7 +94,8 @@ include "includes/functions.php";
             $userIdRequest = $pdo->query("SELECT id FROM users WHERE mail ='" . $_SESSION["loggedEmail"] . "'");
             $userId = $userIdRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
             // "reads" is a reserved keyword in MySQL. By adding the backticks around the table name "reads", we inform MySQL that it's a table name and not a keyword.
-            $sqlInsertNewRead = "insert into `reads` (url,title,creationDate,description,length,readingStatus,userFK) values ('$url','$title','" . date("Y-m-d H:i:s") . "','$description','$length','read','" . $userId["id"] . "')";
+            $sqlInsertNewRead = "insert into `reads` (url,title,creationDate,description,length,readingStatus,userFK)
+            values ('$url','$title','" . date("Y-m-d H:i:s") . "','$description','$length','read','" . $userId["id"] . "')";
             $pdo->exec($sqlInsertNewRead);
             header('Location: reads.php');
             exit();
