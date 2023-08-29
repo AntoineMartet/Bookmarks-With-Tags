@@ -9,6 +9,11 @@
 session_start();
 include "includes/connect_db.php";
 include "includes/functions.php";
+
+if($_SESSION["loggedEmail"] == null){
+    header('Location: index.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
