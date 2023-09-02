@@ -50,13 +50,12 @@ if($_SESSION["loggedEmail"] == null){
     <?php
     $userRequest = $pdo->query("SELECT * FROM users WHERE mail ='" . $_SESSION['loggedEmail'] . "'");
     $user = $userRequest->fetch(PDO::FETCH_ASSOC); // return false if nothing is found
-
     // values for the form fields
-    $url = $title = $description = $length = "";
+    $url = $title = $description = $length = $tags = "";
     // error messages for the form fields
-    $urlErr = $titleErr = $lengthErr = "";
+    $urlErr = $titleErr = $lengthErr = $tagsErr = "";
     // flags to check form fields validity
-    $urlOK = $titleOK = $lengthOK = false;
+    $urlOK = $titleOK = $lengthOK = $tagsOK = false;
 
     // checking validity of all the form fields
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -93,8 +92,30 @@ if($_SESSION["loggedEmail"] == null){
             $lengthOK = true;
         }
 
+        if(empty($_POST['tags'])){
+            $tagsErr = "At least two tags are required";
+        } else {
+            $tags = explode(',', $_POST['tags']);
+            // count($tags) isn't good because user could write "politics," or "politics,,,," to have 2 or 5 tags for example
+            $tagCount = 0;
+            // counting "real" tags
+            foreach ($tags as $tag){
+                if($tag != ""){
+                    $tagCount += 1;
+                    if($tagCount >= 2){
+                        break;
+                    }
+                }
+            }
+            if($tagCount < 2){
+                $tagsErr = "Please add at least a second tag";
+            } else {
+                $tagsOK = true;
+            }
+        }
+
         // inserts the read data in the DB
-        if($urlOK && $titleOK && $lengthOK){
+        if($urlOK && $titleOK && $lengthOK && $tagsOK){
             // Getting User ID from his mail
             $userIdRequest = $pdo->query("SELECT id FROM users WHERE mail ='" . $_SESSION["loggedEmail"] . "'");
             $userId = $userIdRequest->fetch(PDO::FETCH_ASSOC); // Return false if nothing is found
@@ -132,7 +153,7 @@ if($_SESSION["loggedEmail"] == null){
                                 <input type="text" name="description" placeholder="Description or notes about the Read..."/>
                             </div>
                             <div>
-                                <span class="error"><?php echo $lengthErr;?></span>
+                                <span class="error"><?php echo $lengthErr . "<br>";?></span>
                                 <select name="length">
                                     <option value="">--Length of the read--</option>
                                     <option value="short">< 10 minutes (short)</option>
@@ -140,6 +161,10 @@ if($_SESSION["loggedEmail"] == null){
                                     <option value="long">30 - 60 minutes (long)</option>
                                     <option value="x-long">> 60 minutes (extra-long)</option>
                                 </select>
+                            </div>
+                            <div>
+                                <span class="error"><?php echo "<br>" . $tagsErr;?></span>
+                                <input type="text" name="tags" placeholder="Séparez vos tags par des virgules : cinéma, james bond..."
                             </div>
                             <div class="btn_box">
                                 <button>
@@ -155,7 +180,7 @@ if($_SESSION["loggedEmail"] == null){
 
     <?php include "includes/footer.php";?>
 
-    <!-- jQery -->
+    <!-- jQuery -->
     <script src="js/jquery-3.4.1.min.js"></script>
     <!-- bootstrap js -->
     <script src="js/bootstrap.js"></script>
